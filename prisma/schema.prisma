@@ -1,0 +1,56 @@
+datasource db {
+  provider = "sqlite"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Organization {
+  id                        String    @id @default(uuid())
+  name                      String
+  defaultLowStockThreshold  Int       @default(5)
+  createdAt                 DateTime  @default(now())
+  users                     User[]
+  products                  Product[]
+}
+
+model User {
+  id             String       @id @default(uuid())
+  email          String       @unique
+  passwordHash   String
+  salt           String
+  name           String
+  organizationId String
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  createdAt      DateTime     @default(now())
+}
+
+model Product {
+  id                 String               @id @default(uuid())
+  organizationId     String
+  organization       Organization         @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  name               String
+  sku                String
+  description        String?
+  quantityOnHand     Int                  @default(0)
+  costPrice          Float?
+  sellingPrice       Float?
+  lowStockThreshold  Int?
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
+  lastUpdatedBy      String?
+  adjustments        StockAdjustmentLog[]
+
+  @@unique([organizationId, sku])
+}
+
+model StockAdjustmentLog {
+  id             String   @id @default(uuid())
+  productId      String
+  product        Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  quantityChange Int
+  note           String?
+  timestamp      DateTime @default(now())
+  userId         String?
+}
