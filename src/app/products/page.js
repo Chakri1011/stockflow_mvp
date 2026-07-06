@@ -22,6 +22,12 @@ export default async function ProductsPage() {
     orderBy: { name: "asc" },
   });
 
+  const serializedProducts = products.map(p => ({
+    ...p,
+    costPrice: p.costPrice ? Number(p.costPrice) : null,
+    sellingPrice: p.sellingPrice ? Number(p.sellingPrice) : null,
+  }));
+
   const org = await db.organization.findUnique({
     where: { id: session.organizationId },
   });
@@ -35,7 +41,7 @@ export default async function ProductsPage() {
       <Navbar session={session} />
       <main className="container main-content">
         <ProductsClient 
-          initialProducts={products} 
+          initialProducts={serializedProducts} 
           defaultLowStockThreshold={org.defaultLowStockThreshold} 
         />
       </main>

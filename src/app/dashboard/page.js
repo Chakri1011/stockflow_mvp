@@ -42,6 +42,8 @@ export default async function DashboardPage() {
     return p.quantityOnHand <= threshold;
   }).map(p => ({
     ...p,
+    costPrice: p.costPrice ? Number(p.costPrice) : null,
+    sellingPrice: p.sellingPrice ? Number(p.sellingPrice) : null,
     resolvedThreshold: p.lowStockThreshold !== null ? p.lowStockThreshold : defaultThreshold
   }));
 

@@ -1,5 +1,5 @@
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
 }
 
 generator client {
@@ -34,8 +34,8 @@ model Product {
   sku                String
   description        String?
   quantityOnHand     Int                  @default(0)
-  costPrice          Float?
-  sellingPrice       Float?
+  costPrice          Decimal?             @db.Decimal(10, 2)
+  sellingPrice       Decimal?             @db.Decimal(10, 2)
   lowStockThreshold  Int?
   createdAt          DateTime             @default(now())
   updatedAt          DateTime             @updatedAt
